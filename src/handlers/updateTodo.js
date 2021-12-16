@@ -1,11 +1,13 @@
 const { v4: uuidv4 } = require('uuid');
 const AWS = require('aws-sdk');
+const middy = require('@middy/core');
+const bodyParser = require('@middy/http-json-body-parser');
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
 const updateTodo = async (event) => {
   try {
-    const { completed, todo } = JSON.parse(event.body);
+    const { completed, todo } = event.body;
     const { id } = event.pathParameters;
     const result = await dynamodb
       .update({
@@ -33,4 +35,4 @@ const updateTodo = async (event) => {
   }
 };
 
-module.exports = { handler: updateTodo };
+module.exports = { handler: middy(updateTodo).use(bodyParser()) };
