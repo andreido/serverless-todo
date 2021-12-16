@@ -7,11 +7,61 @@ provider:
   name: aws
   runtime: nodejs12.x
   lambdaHashingVersion: '20201221'
+  region: us-west-2
+  iamRoleStatements:
+    # DynamoDB read/write role permissions for TodoTable table
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+        - dynamodb:GetItem
+        - dynamodb:Scan
+        - dynamodb:DeleteItem
+        - dynamodb:UpdateItem
+      Resource:
+        - arn:aws:dynamodb:us-west-2:574238409071:table/TodoTable
 
 functions:
-  hello:
-    handler: handler.hello
+  addTodo:
+    handler: src/handlers/addTodo.handler
     events:
-      - httpApi:
+      - http:
+          path: /
+          method: post
+  getTodos:
+    handler: src/handlers/getTodos.handler
+    events:
+      - http:
           path: /
           method: get
+  getTodo:
+    handler: src/handlers/getTodo.handler
+    events:
+      - http:
+          path: /{id}
+          method: get
+  updateTodo:
+    handler: src/handlers/updateTodo.handler
+    events:
+      - http:
+          path: /{id}
+          method: put
+  deleteTodo:
+    handler: src/handlers/deleteTodo.handler
+    events:
+      - http:
+          path: /{id}
+          method: delete
+
+resources:
+  Resources:
+    TodoTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: TodoTable
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH # partition key

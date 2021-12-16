@@ -1,0 +1,23 @@
+{
+  "name": "aws-node-http-api-project",
+  "version": "1.0.0",
+  "description": "serverless framework with aws lambda crash course",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "serverless deploy --verbose"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andreido/serverless-crash-course.git"
+  },
+  "author": "Andrei Dobre",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/andreido/serverless-crash-course/issues"
+  },
+  "homepage": "https://github.com/andreido/serverless-crash-course#readme",
+  "dependencies": {
+    "aws-sdk": "^2.1046.0",
+    "uuid": "^8.3.2"
+  }
+}
