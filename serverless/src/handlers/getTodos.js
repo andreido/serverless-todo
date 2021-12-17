@@ -1,25 +1,20 @@
 const AWS = require('aws-sdk');
+const { createResponse } = require('../utils');
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
-const getTodos = async (event) => {
+const getTodos = async (event, context) => {
+  let response = null;
+
   try {
     const result = await dynamodb.scan({ TableName: 'TodoTable' }).promise();
     const todos = result.Items;
-    console.log(`Serverless - getTodos - SUCCESS`, { todos });
-
-    return {
-      statusCode: 200,
-      body: JSON.stringify(todos || {})
-    };
+    response = createResponse(200, todos || {});
   } catch (error) {
-    console.log(`Serverless - getTodos - ERROR`, error);
-
-    return {
-      statusCode: 500,
-      body: JSON.stringify(error)
-    };
+    response = createResponse(500, error);
   }
+
+  return response;
 };
 
 module.exports = { handler: getTodos };

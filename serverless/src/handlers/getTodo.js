@@ -1,8 +1,11 @@
 const AWS = require('aws-sdk');
+const { createResponse } = require('../utils');
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
 const getTodo = async (event) => {
+  let response = null;
+
   try {
     const { id } = event.pathParameters;
     const result = await dynamodb
@@ -12,21 +15,12 @@ const getTodo = async (event) => {
       })
       .promise();
     const todo = result.Item;
-
-    console.log(`Serverless - getTodo - SUCCESS`, { todo });
-
-    return {
-      statusCode: 200,
-      body: JSON.stringify(todo || {})
-    };
+    response = createResponse(200, todo || {});
   } catch (error) {
-    console.log(`Serverless - getTodo - ERROR`, error);
-
-    return {
-      statusCode: 500,
-      body: JSON.stringify(error)
-    };
+    response = createResponse(500, error);
   }
+
+  return response;
 };
 
 module.exports = { handler: getTodo };

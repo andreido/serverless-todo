@@ -27,30 +27,35 @@ functions:
       - http:
           path: /
           method: post
+          cors: true
   getTodos:
     handler: src/handlers/getTodos.handler
     events:
       - http:
           path: /
           method: get
+          cors: true
   getTodo:
     handler: src/handlers/getTodo.handler
     events:
       - http:
           path: /{id}
           method: get
+          cors: true
   updateTodo:
     handler: src/handlers/updateTodo.handler
     events:
       - http:
           path: /{id}
           method: put
+          cors: true
   deleteTodo:
     handler: src/handlers/deleteTodo.handler
     events:
       - http:
           path: /{id}
           method: delete
+          cors: true
 
 resources:
   Resources:

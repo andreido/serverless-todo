@@ -1,25 +1,35 @@
-import logo from './logo.svg';
+import React, { useState } from 'react';
+import TodoItem from './components/TodoItem';
+
+import useTodo from './contexts/Todo/useTodo';
+
 import './App.css';
 
-function App() {
+const App = () => {
+  const { todos, addTodo } = useTodo();
+  const [newTodo, setNewTodo] = useState('');
+
+  const onAddTodo = async (e) => {
+    e.preventDefault();
+    setNewTodo('');
+    addTodo(newTodo);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="todos-container">
+      <form onSubmit={onAddTodo}>
+        <input
+          type="text"
+          value={newTodo}
+          onChange={(e) => setNewTodo(e.target.value)}
+          placeholder="What's your next task?"
+        />
+      </form>
+      {todos.map((todoProps) => (
+        <TodoItem key={todoProps.id} {...todoProps} />
+      ))}
     </div>
   );
-}
+};
 
 export default App;

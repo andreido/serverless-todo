@@ -1,13 +1,15 @@
-const { v4: uuidv4 } = require('uuid');
 const AWS = require('aws-sdk');
 const middy = require('@middy/core');
 const bodyParser = require('@middy/http-json-body-parser');
+const { createResponse } = require('../utils');
 
 const dynamodb = new AWS.DynamoDB.DocumentClient();
 
 const updateTodo = async (event) => {
+  let response = null;
+
   try {
-    const { completed, todo } = event.body;
+    const { completed } = event.body;
     const { id } = event.pathParameters;
     const result = await dynamodb
       .update({
@@ -20,19 +22,12 @@ const updateTodo = async (event) => {
       })
       .promise();
     const updatedTodo = result.Attributes;
-    console.log(`Serverless - updateTodo - SUCCESS`, { updatedTodo });
-
-    return {
-      statusCode: 200,
-      body: JSON.stringify(updatedTodo || {})
-    };
+    response = createResponse(200, updatedTodo || {});
   } catch (error) {
-    console.log(`Serverless - updateTodo - ERROR`, { error });
-    return {
-      statusCode: 500,
-      body: JSON.stringify(error)
-    };
+    response = createResponse(500, error);
   }
+
+  return response;
 };
 
 module.exports = { handler: middy(updateTodo).use(bodyParser()) };
